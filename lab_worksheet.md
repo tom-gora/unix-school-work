@@ -1982,3 +1982,51 @@ decorative fluff) then finally counting the lines with `wc`.
 **NOTE:** my own personal VM has quite a few packages, because apart from server and tty it has a DE installed.
 
 ![alt-text](./lab_assets/count-packages.png)
+
+#### Q7.15
+
+<q>What kind of files does the file utility describe these files as?
+The dpkg command can install a package from an existing .deb file using the</q>
+
+Apt stores there copies of fetched .deb packages. (**NOTE:** Newer releses of `apt` do not do that by default, so I had go in an enable this feature
+in apt's config. [SEE
+LINK](https://askubuntu.com/questions/1316011/why-deb-files-are-sometimes-immediately-gone-from-var-cache-apt-archives-after)
+I am aware that this is why previously modified packages did not leave a .deb behind their
+installation process) They are
+native binary distribution format to Debian and its derivatives. `file` describes such file as
+"Debian binary package (format 2.0), with control.tar.xz, data compression xz".
+This is, therefore, the standard version 2.0 of this format, it includes a control archive (archive
+that stores package metadata, a rough equivalent of a manifest file) and the method used for
+compressing the file is also the XZ algorithm.
+
+![alt-text](./lab_assets/deb-cache.png)
+
+#### Q7.16
+
+<q>What is the full command required to reinstall fortune-mod?</q>
+
+This can be done in two ways:
+
+- Using the package manager:
+  - To achieve this with `apt-get` the following command is needed: `apt-get install --reinstall
+fortune-mod`.
+  - To achieve this with `apt` the following command is needed: `apt reinstall fortune-mod`.
+- With `dpkg` (as suggested by the workbook):
+  `-i` or `--install` flag will force install the package over existing installation.
+  The command is `dpkg -i /path/to/deb/file.deb`.
+
+#### Q7.17
+
+<q>What argument is required after `dpkg -r` to remove a package? How does
+this differ from `dpkg -i`?</q>
+
+`-r` takes a package name because it is looking up the target from the index of installed packages
+to remove one; `-i` needs a path to the source file (.deb in this case). It will install it from
+this redistributable.
+
+**NOTE:** for whatever reason `dpkg` installs fortune on my system in `/usr/games/` laction by
+default. It took me a bit of extra research to track this package down, as it is not in path and
+`which` did not work:
+
+![installing with dpkg part one](./lab_assets/dpkg-i-one.png)
+![installing with dpkg part two](./lab_assets/dpkg-i-two.png)
