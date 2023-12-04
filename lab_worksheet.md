@@ -1782,8 +1782,10 @@ extension concateated to it, so it could be used later as a name of the output f
 <q>What is the difference between the update and upgrade subcommands to
 apt-get?</q>
 
-It is worth noting, that modern `apt` syntax has been updated and simplified to use `apt` only as
-package command, in contrast to legacy `apt-get`.
+It is worth noting, that modern `apt` package (released in 2014, standard on all up do date
+Debian-based systems, even LTS) has largely replaced legacy `apt-get`. It provides equivalent
+package manager functionality with simplified syntax. It is worth to be aware of both, just in case we happen to ssh into a machine
+that somehow still lacks `apt` installed.
 
 - `apt-get update` or `apt update` This subcommand updates the local package index. It retrieves information about
   the latest available packages and their versions from the distribution's repositories (and/or
@@ -1834,8 +1836,8 @@ could test it on my VPS but it was just the same. Debian is not Arch after all a
 
 <q>Which version of the apache2 package is available?</q>
 
-**NOTE:** Again, apt has a modern consise syntax for this: `apt show` equivalent to `apt-cache
-show`.
+**NOTE:** Again, modern unified `apt` package manager has a modern consise syntax for this: `apt show` equivalent to `apt-cache
+show` package.
 
 ![apache info](./lab_assets/apache-info.png)
 
@@ -1872,3 +1874,111 @@ space after installing. (Which boggles my mind because it is C, while entire min
 libraries come up to React 40-something kB or Solid 7kB). Until just now I never realized, that
 compiler might introduce such big size overhead in trade of performance. I am sorry, end of
 digression here.
+
+#### Q7.8
+
+<q>What is the result of the first command? What about the second one?</q>
+
+- `hello` will return message "command not found"
+- `dpkg -l hello` will return message "no packages found matching hello"
+
+The first command simply indicates that the shell cannot find the command to execute the package (it
+might be installed but not in the path) while the latter returns information about the package not
+being actually installed.
+
+#### Q7.9
+
+<q>Which packages are listed as "Depends" by fortune-mod? What about
+"Recommends" and "Suggests"?</q>
+
+![Fortune info](./lab_assets/fortune-mod-info.png)
+
+- Dependencies: `libc6 librecode0` - first being a GNU library used for running C programs and the
+  other is used for character encoding conversion. I presume to be able to correctly print "Hello,
+  world!" in readable English even if user has some other encoding configured in the terminal.
+- Recommendations: `fortunes-min` - these is a minimal bundle of additional
+  cookie texts.
+- Suggestions: `fortunes x11-utils bsdmainutils` - the first is a full-size library of additional texts,
+  utils for x11 display server and BSD systems, likely to allow package to be run in GUI
+  environmnets and on BSD family of Unix systems.
+
+#### Q7.10
+
+<q>Which packages does `apt-get -s install` say will be installed along with
+fortune-mod</q>
+
+`fortunes-min` and `librecode0`  
+The first described above and the latter being another characters and encodings conversion library.
+
+**HOWEVER!**
+The sneaky catch is, `apt-get -s install fortune-mod` does not say those packages will be installed.
+It says nothing will be installed, because it is just an installation simulation. To know that the
+output needs to be read, not skimmed for package information ;)
+
+![alt-text](./lab_assets/apt-simulation.png)
+
+#### Q7.11
+
+<q>Which of "Depends", "Recommends" and "Suggests" are installed by apt-
+get install by default. Is there any way of controlling this?</q>
+
+By default, `apt` installs the packages listed under "Depends" and "Recommends". It does not install
+packages listed under "Suggests". In the above case it is skillping `libc6` because it already is in
+the shared libraries:  
+![LibC info](./lab_assets/libc6.png)
+
+To control this behavior, flags can be utilized.`--install-recommends`,
+`--no-install-recommends`, `--no-install-suggests` and `--install-suggests`
+
+![apt instal flags one](./lab_assets/apt-no-recommends.png)
+![apt instal flags two](./lab_assets/apt-suggests.png)
+
+#### Q7.12
+
+<q>How could you remove these dependencies? (don't do this yet, though!)</q>
+
+Both `apt` and `apt-get` use `autoremove` subcommand to tidy up dependencies left hanging on the system.
+
+#### Q7.13
+
+<q>There are five main fields in the output of dpkg -l and the first field can be
+further divided into three status characters. What is the meaning of each field and
+character?</q>
+
+![cowsay package status](./lab_assets/cowsay-status.png)
+
+In the output of this command the line describing the examined package has the following fields:
+
+- The package state string consisting of desired state and aurrent state indicators. The characters
+  in these two letters long string can be:
+  - i - The package is installed.
+  - u - The package is unpacked but not configured.
+  - h - The package is held back (not upgraded).
+  - r - The package was removed but its configuration files are still present.
+  - p - The package is in purge (removal) state.
+    In the example above, both states are "installed" as indicated by "ii".
+- The package name
+- The package version
+- The target CPU architecture the package is compiled for. The example above shows "all" but
+  `apache2` and most more complex programs will list the architecture the system is
+  actually installed for, like "amd64" on my AMD x86 laptop or "aarch64" on my Android phone.
+
+![alt-text](./lab_assets/architecture-intel.png)
+![alt-text](./lab_assets/architecture-android.png)
+
+- The package description
+
+#### Q7.14
+
+<q>Carefully examine the output of dpkg -l and then use a combination of
+dpkg and wc to work out how many packages are currently installed on your
+system. What command did you use?</q>
+
+`dpkg -l | grep "^ii" | wc -l`  
+will do the job, by making `dpkd` list all packages, grepping for the "ii" at the beginning of the
+line (which gets just the lines with installed packages and removes the other `dpkg` output
+decorative fluff) then finally counting the lines with `wc`.
+
+**NOTE:** my own personal VM has quite a few packages, because apart from server and tty it has a DE installed.
+
+![alt-text](./lab_assets/count-packages.png)
