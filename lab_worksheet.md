@@ -5,21 +5,32 @@ font-family: "Source Code Pro",monospace;
     color: #333;
 }
 
-.markdown-body {
+.markdown-body,
+body {
         background: #fff !important; 
 }
 
 q,
 q>*,
-code,
 pre{
-    background: #ddd !important;
+    background: #bbb !important;
+    padding:0.5rem 0.25rem;
+    border-radius: 0.25rem;
+    widht:100% !important;
 }
 
+code{
+    background: #ddd !important;
+    padding:0.05rem;
+    border-radius: 0.25rem;
+}
+
+p[data-line]:has(q),
+p[data-line]:has(q)>*,
 .source-line:has(q),
 .source-line:has(q)>*{
     background: #bbb !important;
-    padding: 0.25rem 0.5rem;
+    padding: 0.15rem 0.25rem;
     border-radius: 0.25rem;
 }
 
@@ -40,7 +51,7 @@ th {
 th:first-of-type {
     border-radius: 0.25rem 0 0 0;
 }
-th:last-of-type {
+th:last-of-typbbb
     border-radius: 0 0.25rem 0 0;
 }
 
@@ -109,7 +120,7 @@ My username is `tomeczku`
 point /?</q>
 
 <q>What do the Used and Available columns stand for? (remember you can
-always read the fine manual with man df)</q>
+always read the fine manual with `man df`)</q>
 
 ![df command](./lab_assets/df.png)
 
@@ -129,7 +140,7 @@ Commmand `pwd` prints a full absolute path to a current working directory, begin
 
 #### Q1.7
 
-<q>Use man ls to find out what information is given by ls -l? Figure out which
+<q>Use man ls to find out what information is given by `ls -l`? Figure out which
 column shows file size (Tip: file1 created by the touch command should be
 empty, therefore taking up no space!). What is the size of the newly created file,
 file2?</q>
@@ -152,7 +163,7 @@ with the cd command? (Tip: the command prompt may give you a hint as well)</q>
 
 <q>Use the pwd command to find out what happened and your current directory.</q>
 
-<q>To which directory did the command: cd move you?</q>
+<q>To which directory did the command: `cd` move you?</q>
 
 With `..` I just navigated to a parent directory.  
 With `.` I am able to reference the current directory so I do not need to use the absolute path. Residing in my home directory
@@ -166,7 +177,7 @@ would not be possible, just like in any linked data structure. At least this is 
 
 #### Q1.11
 
-<q>Are there any hidden files in the root directory called /?</q>
+<q>Are there any hidden files in the root directory called `/`?</q>
 
 No, there are no hidden files in root. There are, as mentioned above, `.` and `..` but those are different kind of entries that aren't files.
 (Worth noting, in root both of them reference the root location. It is not possible to traverse up from root).
@@ -189,7 +200,7 @@ they equivalents in `/usr/`. These are: `bin sbin lib lib64`.
 #### Q2.1
 
 <q>Which version of the Linux kernel is your Linux system running, based on the
-files you can see in /boot?</q>
+files you can see in `/boot`?</q>
 
 Currently I am on Fedora 39 Kernel 6.15 (as of 21/09/23)
 Fedora by default stores copies of recent kernels for easy "soft rollback" on boot from grub menu by booting into system using previous kernel.
@@ -198,7 +209,7 @@ Fedora by default stores copies of recent kernels for easy "soft rollback" on bo
 
 #### Q2.2
 
-<q>Can you find another file in /bin containing a binary for a command you have
+<q>Can you find another file in `/bin` containing a binary for a command you have
 already used?</q>
 
 Bin contains common (mostly gnu) unix utils. All commands typed in a shell are just executables looked up from /bin. Either directly or symlinked.
@@ -240,35 +251,35 @@ I am just providing my best guess explanation based on the knowledge I have.
 
 #### Q2.7
 
-<q>Which three directories in /usr have names corresponding to directory
-names at the top / level?</q>
+<q>Which three directories in `/usr` have names corresponding to directory
+names at the top `/` level?</q>
 
 > /usr/bin/  
 > /usr/sbin/  
 > /usr/lib/
 
 would be the answer for many traditional Linux distributions. In my case, Redhat tweaked Fedora slightly. All binaries are placed in
-/usr/bin/ && /usr/sbin/ and libraries in /usr/lib/
+`/usr/bin/` && `/usr/sbin/` and libraries in `/usr/lib/`
 while the equivalents in root are only symlinked to them. This can be seen below:
 
 ![usr and root](./lab_assets/usr_vs_root.png)
 
 #### Q2.8
 
-<q>Which directory in /var is used for storing log files?</q>
+<q>Which directory in `/var` is used for storing log files?</q>
 
-> /var/log/
+> `/var/log/`
 
 #### Q2.9
 
-<q>Which directory in /home belongs to the student user?</q>
+<q>Which directory in `/home` belongs to the student user?</q>
 
 Not the case on my personal machine that I use in place of school provided VM, but the normal expectation would be that the user named `student`
 would have their corresponding home directory located in `/home/student/`
 
 #### Q2.10
 
-<q>What does the -p to mkdir do?</q>
+<q>What does the `-p` to `mkdir` do?</q>
 
 As per mkdir's manpage:
 
@@ -289,13 +300,13 @@ I do not have access to the directory on a school machine, but I assume this is 
   the program to traverse the directory structure down the nodes (like in binary trees and other tree data structures) and remove both directory and everything in it.
 
 - User has no write permissions or there is some problem. We just want to remove the directory, no questions asked. The force flag will just send it
-  into the void without prompting (-r flag still needed for a dir)
+  into the void without prompting (`-r` flag still needed for a dir)
 
 - User is not owner of directory. Elevating privilages like with `sudo` are needed, or root/admin intervention.
 
 #### Q2.13
 
-<q>What happens when the last paramter of the cp command is a directory?</q>
+<q>What happens when the last paramter of the `cp` command is a directory?</q>
 
 Very similar situation to `rm`. We are affecting the filesystem and creating a new inode for the copy:
 
@@ -335,32 +346,32 @@ No. Answered in Q2.11/12 response.
 
 <q>What files are left in your home directory, and why?</q>
 
-Oh no, I am not running rm -rf \* anywhere anywhere in my home directory for this course ;)
+Oh no, I am not running `rm -rf *` anywhere anywhere in my home directory for this course ;)
 
 #### Q2.19
 
-<q>Write down the permissions for the /etc/fstab and /etc/shadow files on
+<q>Write down the permissions for the `/etc/fstab` and `/etc/shadow` files on
 your system, and explain why the latter is more heavily restricted.</q>
 
 (**NOTE**: I have the long listing command aliased to `ll`)
 
 Both files are owned by root so obviously need elevated privileges being system files.
 
-For /etc/fstab file:
+For `/etc/fstab` file:
 
 > user can read and write to it
 > members of group (in this case sudoers) and anyone else can read it
 > no execution permissions for anyone
 
-For /etc/shadow file:
+For `/etc/shadow` file:
 
-> Nobody has any permissions to do anything with this file.
+> Nobody has any permissions to do anything with this file. This is because encrypted passwords are stored there, so it is critical data for system access and security.
 
 ![Fstab and shadow permissions](./lab_assets/fstab_shadow_permissions.png)
 
 #### Q2.20
 
-<q>Use the ls -l command to find out what the default user, group and
+<q>Use the `ls -l` command to find out what the default user, group and
 permissions are for a newly created file</q>
 
 On my machine the default mask results in the following permissions when a file is touched in my home directory by me:
@@ -435,7 +446,7 @@ The answer is: `006`.
 
 #### Q2.27
 
-<q>What is the mount point of the the filesystem stored on the /dev/sda1
+<q>What is the mount point of the the filesystem stored on the `/dev/sda1`
 device?</q>
 
 For the school system I would not know and I am also not sure how much access is given to students. Are they virtual machine
@@ -447,7 +458,7 @@ In my case sda devices are secondary drive, and main drive is nvme, first partit
 
 #### Q2.28
 
-<q>What is the type of the filesystem mounted from the /dev/sda1 device?</q>
+<q>What is the type of the filesystem mounted from the `/dev/sda1` device?</q>
 
 If that's efi it will be FAT, if boot EXT and root I would guess EXT as well, but this can vary. There are various filesystems
 supported by unix these days (couple onb linux or bsd, apple has their filesystem for macos devices...). Traditionaly EXT,
@@ -500,7 +511,7 @@ for EFI and EXT for boot/root is the minimum.
 #### Q2.34
 
 <q>The filesystem you just mounted has been mounted with two options,
-relatime and rw. What does rw mean?</q>
+relatime and `rw`. What does `rw` mean?</q>
 
 It just means the mounted drive has read and write capabilities and operations are performed in real time ( no scheduling).
 
@@ -565,7 +576,7 @@ Unix convention dictates that root will have UID 0.
 
 <q>What is your current group, and which groups are you a member of?</q>
 
-<q>Use ls -n to check the GID for the users group. What is it?</q>
+<q>Use `ls -n` to check the GID for the users group. What is it?</q>
 
 The current group name and number for my user are default. The name is the same as UID, which is in my case
 `student-tom` and the default number for first non-system user is 1000.  
@@ -576,7 +587,7 @@ The GID for `users` is 100.
 
 #### Q3.7
 
-<q>What is the difference in operation between these two uses of su, and why?</q>
+<q>What is the difference in operation between these two uses of `su`, and why?</q>
 
 Well, root can do pretty much all it wants, so it can "become" any user without any authentication with just `su $user_name`,
 whereas using just `su` allows regular users to "become" a super user - root, but since you are a mere mortal asking to
@@ -604,7 +615,7 @@ is a path to a default shell used by the user. Fields are separated by `:` delim
 
 #### Q3.13
 
-<q>Who is the owner and what are the permissions on the /etc/shadow file?
+<q>Who is the owner and what are the permissions on the `/etc/shadow` file?
 How does this affect what you just tried to do?</q>
 
 ![shadow 1](./lab_assets/shadow1.png)
@@ -639,7 +650,7 @@ Regular users IDs are integers that increment up from 1000.
 
 <q>What is the name of the file where group passwords are stored?</q>
 
-Group passwords are typically stored in the /etc/gshadow file in unix-like systems.
+Group passwords are typically stored in the `/etc/gshadow` file in unix-like systems.
 
 #### Q3.18
 
@@ -671,7 +682,7 @@ All the other fields are autogenerated.
 
 #### Q3.22
 
-<q>Which of the following does useradd create, by default: line in /etc/passwd
+<q>Which of the following does `useradd` create, by default: line in `/etc/passwd`
 with UID, a user-private group, a password, a home directory with skeleton files?</q>
 
 All of those except for a password, that is manually provided by the user.
@@ -680,7 +691,7 @@ All of those except for a password, that is manually provided by the user.
 
 #### Q3.23
 
-<q>What is the effect of the useradd -D -s /bin/bash command? Other than
+<q>What is the effect of the `useradd -D -s /bin/bash` command? Other than
 creating a new user, how can you check this?</q>
 
 This does not actually create a new user. With those flags it modifies how `adduser` will work by default.
@@ -692,7 +703,7 @@ where we can see `$SHELL` is set to the value we have set up as default.
 
 #### Q3.24
 
-<q>Examine a long listing of the /home directory. What does userdel NOT do
+<q>Examine a long listing of the `/home` directory. What does userdel NOT do
 by default? What flag to userdel would have done this?</q>
 
 `userdel` will not delete the user directory in `/home` by default. To have it done by this command a flag `-r` is needed.
@@ -712,18 +723,18 @@ They denote adding to a group action. Also, the order of arguments that this com
 
 #### Q3.26
 
-<q>What are the first three "permission" characters of this file? (/usr/bin/passwd)</q>
+<q>What are the first three "permission" characters of this file? (`/usr/bin/passwd`)</q>
 
 `-rwsr-xr-x` is the permission string. Read and write for user are self explanatory.
 `s` in place of `x` indicates the setuid permission for the owner of the file.
 When setuid is set on an executable file, it means that the program will be executed with the permissions of the file's owner,
-not the person running the program. In this case, /usr/bin/passwd is a setuid program that allows users to change their own passwords
+not the person running the program. In this case, `/usr/bin/passwd` is a setuid program that allows users to change their own passwords
 without needing superuser privileges.
 
 #### Q3.27
 
-<q>Use the ls -ld /tmp directory to document how a world writable directory
-with the sticky bit set is shown by ls -l.</q>
+<q>Use the `ls -ld /tmp` directory to document how a world writable directory
+with the sticky bit set is shown by `ls -l`.</q>
 
 The permission string is `drwxrwxrwt`
 
@@ -736,7 +747,7 @@ can do all things but only on the files the they own themselves. The sticky bit 
 
 #### Q4.1, Q4.2, Q4.3 and Q4.4
 
-<q>What is the difference between ps and ps -ef?</q>
+<q>What is the difference between `ps` and `ps -ef`?</q>
 
 <q>Explain the meaning of the column headers UID, PID, PPID and CMD</q>
 
@@ -748,9 +759,9 @@ of 1 (the init process)</q>
 Bare bones `ps` prints minimum two processes. Shell and the process(es) running in in at the time of invoking `ps`.
 With flags as per the command's help page:
 
-> -A, -e all processes
+> `-A`, `-e` all processes
 
-> -f full-format, including command lines
+> `-f` full-format, including command lines
 
 So these flags allow the maximum output. Listing all the processes and all the info about them.
 
@@ -782,7 +793,7 @@ listing it appears once and each time has a new PID.
 
 #### Q4.6
 
-<q>What does the & sign do to the sleep command? (Tip: what happens to the
+<q>What does the `&` sign do to the `sleep` command? (Tip: what happens to the
 prompt?)</q>
 
 Appending ` &` after the command runs it in a background, in practice "decouplig" th process from the shell session where it was invoked.
@@ -801,7 +812,7 @@ when they are in the background) by this particular process. The long number is 
 
 #### Q4.8
 
-<q>What is the PID and PPID of the running shell and the two sleep processes?
+<q>What is the PID and PPID of the running shell and the two `sleep` processes?
 What is the relationship between them?</q>
 
 ![shell pid](./lab_assets/two_speeps.png)
@@ -819,7 +830,7 @@ It sends to the screen a line that consists of [job number] Status(Terminated, K
 
 #### Q4.10
 
-<q>What is the difference between using Ctrl-C and Ctrl-Z to stop a process?</q>
+<q>What is the difference between using `Ctrl-C` and `Ctrl-Z` to stop a process?</q>
 
 Ctrl-Z sends the process to the background (inspect with `bg` and bring to the foreground with `fg`),
 while Ctrl-C attempts to close the program very gracefully. It will ask politely with interrupt signal (2) to stop work, clean memory and then exit.
@@ -834,7 +845,7 @@ I daily use `btop` or at least `htop` for visual clarity, and the basic function
 
 #### Q4.12
 
-<q>What command line would you use for vmstat to provide a sequence of 5
+<q>What command line would you use for `vmstat` to provide a sequence of 5
 pictures of system performance at 2-second intervals?</q>
 
 `vmstat 2 5`
@@ -849,7 +860,7 @@ but at least `chmod 100`. Without affecting existing permissions `chmod u+x` wil
 #### Q4.14
 
 <q>What percentage of the available CPU power is it taking up, according to
-top?</q>
+`top`?</q>
 
 Well this jobs runs a million turns loop writing incrementing integers into a black hole that is `/dev/null`.
 It is going to take up some amunt of power and thankfully the instructions don't ask unsuspecting GUI-using students
@@ -926,24 +937,24 @@ and instead of default the formatted string will be returned.
 
 #### Q4.22
 
-<q>What is the value stored in /etc/timezone?</q>
+<q>What is the value stored in `/etc/timezone`?</q>
 
-It just stores the system's configured timezone as a plain text string. Possibly one of the cimplest config files ever.
+It just stores the system's configured timezone as a plain text string. Possibly one of the simplest config files ever.
 
 ![timezone](./lab_assets/timezone.png)
 
 #### Q4.23, Q4.24, Q4.25 and Q4.26
 
-<q>What would the five "time fields" in a crontab be to run a command at 12
+<q>What would the five "time fields" in a `crontab` be to run a command at 12
 noon on New Year's day</q>
 
-<q>What would the five "time fields" in a crontab be to run a command at 8:30
+<q>What would the five "time fields" in a `crontab` be to run a command at 8:30
 in the morning each weekday?</q>
 
-<q>What would the five "time fields" in a crontab be to run a command at ten
+<q>What would the five "time fields" in a `crontab` be to run a command at ten
 to midnight on the first Sunday of each month?</q>
 
-<q>Read the man page for crontab. Which file could you create as system
+<q>Read the man page for `crontab`. Which file could you create as system
 administrator in order to turn off the cron facility for all normal users?</q>
 
 Cron job to run this command at 12 noon on New Year's Day `0 12 11 1 1 * date >>/home/student/datenow.txt`.
@@ -958,7 +969,7 @@ If the day date of the next day minus the day date of today is less than 7 then 
 
 <q>As which user are the hourly, daily, weekly and monthly cron scripts run?</q>
 
-<q>At what time of day are the jobs in /etc/cron.daily run?</q>
+<q>At what time of day are the jobs in `/etc/cron.daily` run?</q>
 
 Those scheduled reoccurring jobs are typically run by root user.
 
@@ -971,16 +982,16 @@ This is the case on my system as well:
 
 <q>Which command allows a user to remove their crontab?</q>
 
-'crontab -r' When a user runs this command, it removes their crontab file, effectively deleting all the scheduled jobs associated with that user.
+`crontab -r` When a user runs this command, it removes their crontab file, effectively deleting all the scheduled jobs associated with that user.
 
 ## Q5
 
 #### Q5.1 and Q5.2
 
-<q>What appears on the screen and why? What ends up in the file h.lst, and
+<q>What appears on the screen and why? What ends up in the file `h.lst`, and
 why?</q>
 
-<q>What has happened to the contents of h.lst, and why?</q>
+<q>What has happened to the contents of `h.lst`, and why?</q>
 
 ![hello redirection one](./lab_assets/hello_redirection1.png)  
 Nothing appears on the screen (apart from the new prompt) because the command output has been written to the `h.1st` file.
@@ -1002,7 +1013,7 @@ a table.</q>
 <q>What do you think the operator 2>> would do? Test your theory. Were you
 right?</q>
 
-<q>What's happened to the output? What does /dev/null do with data written
+<q>What's happened to the output? What does `/dev/null` do with data written
 to it? (man null might help if you are unsure)</q>
 
 Prerequisite: `hello` and `hello.txt` exist in the working directory.
@@ -1029,7 +1040,7 @@ for interfacing between userspace and hardware drivers. I like to imagine that `
 
 #### Q5.7
 
-<q>What is the output of this command? (tr a-z n-za-m <hello.txt)</q>
+<q>What is the output of this command? (`tr a-z n-za-m <hello.txt`)</q>
 
 Command `tr` effectively does a Ceasar's cipher here. Takes 21 ranges of letters `a-z` and `n-za-m` (where `za` defines a join of two ranges `n-z` and `a-m` so we effectively loop around the aplhabet again )
 and replaces letters of given indexes from the first array to letters of the same index from the second. So it shifts characters by 13 positions. If run again on the output it will reverse back to the original output,
@@ -1037,7 +1048,7 @@ because the English alphabet has 26 letters. I would argue this example is there
 
 #### Q5.8
 
-<q>What is the default block size used by dd? How could you change it?</q>
+<q>What is the default block size used by `dd`? How could you change it?</q>
 
 Using flag `bs` that stand for byte size. As per the man page of `dd`:
 
@@ -1087,12 +1098,12 @@ Using flags `if` and `of` that stand for input file and output file. As per the 
 character?</q>
 
 <q>What do you notice about the ordering of bytes when they are displayed with
--t x2. How could you change this using the --endian flag? (If you're not sure
+`-t x2`. How could you change this using the `--endian` flag? (If you're not sure
 what "endianness" is, you can look it up!)</q>
 
 For formatting the addresses - flag `-Ax` where `A`:
 
-> -A, --address-radix=RADIX
+> `-A`, `--address-radix=RADIX`
 
               output format for file offsets; RADIX is one of [doxn], for Dec‐
               imal, Octal, Hex or None
@@ -1103,7 +1114,7 @@ and `x` passes the hexadecimal format.
 
 For printing single bytes in hex - flag `-t x1` where `t`:
 
-> -t, --format=TYPE
+> `-t`, `--format=TYPE`
 
               select output format or formats
 
@@ -1153,9 +1164,9 @@ just like in vi, vim and neovim. Sadly, it lacks `?` for backwards search.
 #### Q5.16 and Q5.17
 
 <q>Based on what you see (and maybe what you can find out with some man
-commands), what do you think the zcat and groff commands do? (zcat /usr/share/man/man1/man.1.gz | groff -man -T ascii | more)</q>
+commands), what do you think the zcat and groff commands do? (`zcat /usr/share/man/man1/man.1.gz | groff -man -T ascii | more`)</q>
 
-<q>What happens if you leave out the -T ascii flag in the above command?
+<q>What happens if you leave out the `-T ascii` flag in the above command?
 Do you recognise the format produced?</q>
 
 When man command is called these tools are what is called behind the scenes to display man pages to the user. Documents are stored in `usr/share/man` in compressed form.
@@ -1206,7 +1217,7 @@ In the first question therefore only the first echo statemen will run, in the se
 
 #### Q5.21
 
-<q>Create a table with a row for each of the conditional operators && and || and
+<q>Create a table with a row for each of the conditional operators `&&` and `||` and
 the following columns:
 Does cmd2 if cmd1 returns zero exit status?
 Does cmd2 if cmd1 returns non-zero?
@@ -1250,9 +1261,9 @@ containing the string init. Provide the full (pipelined) command line which will
 include the regular expression r.s among the permissions string (in other words,
 have SUID or SGID set)?</q>
 
-I did slightly improve on the regex as what the question proposes will return any line where r and s show anywhere with anything in between, for instance line with command "xrefresh".
+I did slightly improve on the regex as what the question proposes will return any line where r and s show anywhere with anything in between, for instance line with command `xrefresh`.
 
-`ls -l /usr/bin/ | grep -E "^-r.s` yields better results, as it strictly looks at the beginning of the line for the pattern of a file with permissions starting from `r`.
+`ls -l /usr/bin/ | grep -E ^-r.s` yields better results, as it strictly looks at the beginning of the line for the pattern of a file with permissions starting from `r`.
 
 ![grep bin for permissions](./lab_assets/bingrep.png)
 
@@ -1289,7 +1300,7 @@ or `grep -P "\b[A-Z]{2\b}` where `\b` denotes a word boundary and conveniently t
 
 <q>The file command shows the type of a specific file (or list of files). Provide a
 single (pipelined) command which will count how many Perl and Python scripts
-there are in the /usr/bin directory. </q>
+there are in the `/usr/bin` directory. </q>
 
 `file /usr/bin/* | grep -Ec "Pearl script|Python script`
 
@@ -1297,7 +1308,7 @@ there are in the /usr/bin directory. </q>
 
 #### Q5.27
 
-<q>What does the -d: flag mean in the first of these commands?</q>
+<q>What does the `-d`: flag mean in the first of these commands?</q>
 
 Using `cut` with a flag `-d` allows to specify a delimiter, a char that separates fields in a string. In the case of groups listing it is `:`.
 `-f1` then tells `cut` to only output first field from each broken down line.
@@ -1306,7 +1317,7 @@ Using `-c` on the other hand allows to specify how many or how big range of char
 
 #### Q5.28
 
-<q>Create a pipe of the ls -l and cut commands which only lists the
+<q>Create a pipe of the `ls -l` and `cut` commands which only lists the
 permissions field and the filename</q>
 
 It is a bit of a ham-fisted method, as `cut` is limited a bit. I cannot also use empty space as a reliable delimiter here (some fields like date have " " inside of them), so apparently I can only hardcode the char position where the filename begins.
@@ -1318,7 +1329,7 @@ as the distance from the beginning of the line to the filename filed will vary. 
 
 #### Q5.29
 
-<q>What command could sort the contents of the /etc/passwd file
+<q>What command could sort the contents of the `/etc/passwd` file
 alphabetically by username?</q>
 
 And here we run into the biggest issue with command line utilities. The absence of any standards for core programs syntax.
@@ -1345,7 +1356,7 @@ them.</q>
 #### Q5.31
 
 <q>Construct and document a pipelined command which counts how many
-times your system has been rebooted (according to the last logs.</q>
+times your system has been rebooted (according to the `last` logs.</q>
 
 Just a sprinkle of scripting and ansi escape strings (long time favourite from college java programs to make my submission stand out ;) ) added to refine the output:
 
@@ -1360,7 +1371,7 @@ Just a sprinkle of scripting and ansi escape strings (long time favourite from c
 
 #### Q5.32
 
-<q>Use the -mtime option to find to get a list of files under /usr/share/doc
+<q>Use the `-mtime` option to find to get a list of files under `/usr/share/doc`
 which were changed more than 10 years ago. Document the command used.</q>
 
 Small simplification assuming a year is always 365 days.
@@ -1378,11 +1389,11 @@ Small simplification assuming a year is always 365 days.
 
 <q>How large is the debiandoc.tar file, and to whom does it belong?</q>
 
-<q>What does the -t option to tar do</q>
+<q>What does the `-t` option to tar do</q>
 
 <q>Do the files in the archive use relative or absolute pathnames?</q>
 
-<q>The -v (for verbose) provides additional information about the files in the
+<q>The `-v` (for verbose) provides additional information about the files in the
 archive. What additional information does this inlude?</q>
 
 `debiandoc.tar` belongs to a user who created the archive - in this case "student-tom" user.
@@ -1501,7 +1512,7 @@ Yes.
 #### Q6.7
 
 <q>If you log in separately as root (on a different virtual terminal, not by using
-su) what additional directories are included in $PATH?</q>
+su) what additional directories are included in `$PATH`?</q>
 
 ![path of my user](./lab_assets/path_me.png)
 ![path of root user](./lab_assets/path_root.png)
@@ -1514,7 +1525,7 @@ as these are system binaries used for administration etc. System binaries direct
 #### Q6.8
 
 <q id="six-eight">Thinking back to Lab 4, when you created the cruncher script, why did you
-need to type ./cruncher to run it? (Hint: what directory is not in the $PATH
+need to type ./cruncher to run it? (Hint: what directory is not in the `$PATH`
 variable)</q>
 
 Well, executable binaries/scripts that are placed in directories added to the user's $PATH shell env variable
@@ -1529,7 +1540,7 @@ path will work just as well.
 
 #### Q6.9
 
-<q>How could you add a directory to the $PATH variable? Test your answer to
+<q>How could you add a directory to the `$PATH` variable? Test your answer to
 make sure it works! (Remember you can log out and back in again if you mess it up
 \- that will start a new shell).</q>
 
@@ -1542,7 +1553,7 @@ It just needs to be sourced with `source` command like so:
 
 #### Q6.10
 
-<q>Why might it not be a good idea to include the current directory in $PATH?
+<q>Why might it not be a good idea to include the current directory in `$PATH`?
 (Hint: what if you had changed to somebody else's directory?)</q>
 
 1. Security wise: shell will be able to execute anything executable in any location. It is not hard to imagine a malicious script named
@@ -1552,7 +1563,7 @@ It just needs to be sourced with `source` command like so:
 #### Q6.11
 
 <q>Pipe the output of the env variable into grep to find out which of the above
-variables (along with $PATH are environment variables.)</q>
+variables (along with `$PATH` are environment variables.)</q>
 
 ![Filtered env output](./lab_assets/env-filtered.png)
 
@@ -1639,7 +1650,7 @@ with their meaning.</q>
 
 #### Q6.20
 
-<q>What would happen if you left out the \ here?</q>
+<q>What would happen if you left out the `\` here?</q>
 
 `echo Fish & chips` will result in shell echoing "Fish" and also trying to execute `chips` command,
 while `echo` is run in the background. It will fail, unless the user has some package called `chips`
@@ -1651,7 +1662,7 @@ installed on the system for some reason. I don't think such package exists thoug
 double quote in a double-quoted string?</q>
 
 <q>How would you use the echo command to print a dollar quantity stored in a
-variable $price with a dollar sign in front of it?</q>
+variable `$price` with a dollar sign in front of it?</q>
 
 This can be achieved with escaping (using `\`) but only in double quotes as single quotes prevent
 string interpretation and do not respect escaped values. Thus the first two example are interpeted
@@ -1685,7 +1696,7 @@ flags is a string gets appended to "log-".
 
 #### Q6.25
 
-<q>Why do you need the ./ in front of the shell script's name?</q>
+<q>Why do you need the `./` in front of the shell script's name?</q>
 
 I believe this has been answered in
 <a href="#six-eight"> question 6.8</a>. The script needs a location if it is not in a directory
@@ -1694,8 +1705,8 @@ path relative to current direcotry.
 
 #### Q6.26, Q6.27, Q6.28 and Q6.29
 
-<q>What are the values of the $#, $0 and $1 variables on your command line,
-and do any of these relate to the output of ps -f which describes your current
+<q>What are the values of the `$#`, `$0` and `$1` variables on your command line,
+and do any of these relate to the output of `ps -f` which describes your current
 shell?</q>
 
 <q>What do the $0 and $# variables represent?</q>
@@ -1713,7 +1724,7 @@ These are the default shell variables used to store and retrieve the command met
 
 #### Q6.30
 
-<q>If you replace $1 by ${1-default}, what happens when you call your script
+<q>If you replace `$1` by `${1-default}`, what happens when you call your script
 without parameters?</q>
 
 Curly braces allow to do kind of parameter expansion (similar to coalescent operator like `??` or
@@ -1739,15 +1750,15 @@ in scripts that need to loop over args one at a time.
 
 <q>Summarise what this script does with its parameters</q>
 
-<q>Explain what the effect of the for filename in $\* command is (and how
+<q>Explain what the effect of the for filename in `$\*` command is (and how
 it relates to do and done)</q>
 
-<q>Explain what the effect of the if, then and fi commands are.</q>
+<q>Explain what the effect of the if, then and `fi` commands are.</q>
 
-<q>Explain what echo $filename | grep -q '.txt$' does, and why the -q
+<q>Explain what echo `$filename | grep -q '.txt$'` does, and why the `-q`
 and single quotes are required.</q>
 
-<q>Explain how the line beginning with backup= works (the man page for
+<q>Explain how the line beginning with `backup=` works (the man page for
 basename might help).</q>
 
 The script takes `*` glob as an argument which stands for "everything in the current location. It
@@ -1799,7 +1810,7 @@ repositories and only then run an upgrade.
 #### Q7.2
 
 <q>Did your system keep back packages? Which packages were installed by
-dist-upgrade?</q>
+`dist-upgrade`?</q>
 
 It so happens that my VM was fully up to date and not needing any upgrades. I tried to check if I
 could test it on my VPS but it was just the same. Debian is not Arch after all and changes are infrequent.
@@ -1830,11 +1841,11 @@ could test it on my VPS but it was just the same. Debian is not Arch after all a
 
 #### Q7.4, Q7.5 and Q7.6
 
-<q>What virtual packages does the apache2 package provide?</q>
+<q>What virtual packages does the `apache2` package provide?</q>
 
-<q>On which other packages does apache2 depend (or "pre-depend")?</q>
+<q>On which other packages does `apache2` depend (or "pre-depend")?</q>
 
-<q>Which version of the apache2 package is available?</q>
+<q>Which version of the `apache2` package is available?</q>
 
 **NOTE:** Again, modern unified `apt` package manager has a modern consise syntax for this: `apt show` equivalent to `apt-cache
 show` package.
@@ -1865,7 +1876,7 @@ media-types perl procps`
 
 #### Q7.7
 
-<q>Use apt-cache show to find out what this package does, and how much
+<q>Use `apt-cache` show to find out what this package does, and how much
 space it will take up (in KiB).</q>
 
 A core GNU util (Richard Stallman approves as long as it is being run on GNU/Linux ;) packaged for
@@ -1888,7 +1899,7 @@ being actually installed.
 
 #### Q7.9
 
-<q>Which packages are listed as "Depends" by fortune-mod? What about
+<q>Which packages are listed as "Depends" by `fortune-mod`? What about
 "Recommends" and "Suggests"?</q>
 
 ![Fortune info](./lab_assets/fortune-mod-info.png)
@@ -1905,7 +1916,7 @@ being actually installed.
 #### Q7.10
 
 <q>Which packages does `apt-get -s install` say will be installed along with
-fortune-mod</q>
+`fortune-mod`</q>
 
 `fortunes-min` and `librecode0`  
 The first described above and the latter being another characters and encodings conversion library.
@@ -1919,8 +1930,8 @@ output needs to be read, not skimmed for package information ;)
 
 #### Q7.11
 
-<q>Which of "Depends", "Recommends" and "Suggests" are installed by apt-
-get install by default. Is there any way of controlling this?</q>
+<q>Which of "Depends", "Recommends" and "Suggests" are installed by `apt-
+get` install by default. Is there any way of controlling this?</q>
 
 By default, `apt` installs the packages listed under "Depends" and "Recommends". It does not install
 packages listed under "Suggests". In the above case it is skillping `libc6` because it already is in
@@ -1941,7 +1952,7 @@ Both `apt` and `apt-get` use `autoremove` subcommand to tidy up dependencies lef
 
 #### Q7.13
 
-<q>There are five main fields in the output of dpkg -l and the first field can be
+<q>There are five main fields in the output of `dpkg -l` and the first field can be
 further divided into three status characters. What is the meaning of each field and
 character?</q>
 
@@ -1970,7 +1981,7 @@ In the output of this command the line describing the examined package has the f
 
 #### Q7.14
 
-<q>Carefully examine the output of dpkg -l and then use a combination of
+<q>Carefully examine the output of `dpkg -l` and then use a combination of
 dpkg and wc to work out how many packages are currently installed on your
 system. What command did you use?</q>
 
@@ -1985,8 +1996,7 @@ decorative fluff) then finally counting the lines with `wc`.
 
 #### Q7.15
 
-<q>What kind of files does the file utility describe these files as?
-The dpkg command can install a package from an existing .deb file using the</q>
+<q>What kind of files does the `file` utility describe these files as?</q>
 
 Apt stores there copies of fetched .deb packages. (**NOTE:** Newer releses of `apt` do not do that by default, so I had go in an enable this feature
 in apt's config. [SEE
@@ -2003,7 +2013,7 @@ compressing the file is also the XZ algorithm.
 
 #### Q7.16
 
-<q>What is the full command required to reinstall fortune-mod?</q>
+<q>What is the full command required to reinstall `fortune-mod`?</q>
 
 This can be done in two ways:
 
@@ -2030,3 +2040,581 @@ default. It took me a bit of extra research to track this package down, as it is
 
 ![installing with dpkg part one](./lab_assets/dpkg-i-one.png)
 ![installing with dpkg part two](./lab_assets/dpkg-i-two.png)
+
+#### Q7.18, Q7.19 and Q7.20
+
+<q>What happens? How could you resolve this manually with `dpkg`? Do this now. (removing a dependency
+package)</q>
+
+<q>What happens? Why?</q>
+
+<q>How is `fortune-mod` now listed by `dpkg -l`? What does this indicate?</q>
+
+The system will prevent me from doing so without forcing this action through. Packages are indexed
+on a dependency tree, similar to filesystem nodes, or DOM nodes in a browser and if "children"
+processes depend on the package that is being modified in a way it breaks dependency, then the
+system will prevent this. `dpkg` offers a flag to force the action by skipping this check. The
+command is `dpkg -r --force-depends <package_name>`.
+
+If this breakage is enabled, then the package needing the missing dependency will not be able to
+execute and an appropriate error with what is missing will be printed.
+
+`dpkg` lists a package like that as `un` indicating that it is unpacked and not configured (in
+simple words, missing something).
+
+![broken dependency](./lab_assets/dependency-breaking.png)
+
+Additionally, when tidying up I can use `apt` to fix broken dependencies with the `fix-broken` flag:
+
+![apt fix broken](./lab_assets/fix-broken.png)
+
+#### Q7.21 and Q7.22
+
+<q>Which flags to tar are used to create, extract, and list the contents of a tar
+archive?</q>
+
+<q>If a `-f` is not given to tar when creating an archive, what does it use? What
+about if it is reading (extracting or listing) and archive?</q>
+
+- `-c` is a flag used to create a tarball
+- `-x` is a flag used to extract a tarball
+- `-t` is a flag used to list the contents of a tarball
+
+These flags are usually used in combination with other flags like `-v` to get a verbose output
+printed to the console and `-f` to point to the file/directory to be archived.
+
+`tar` being Tape ARchiver should automatically act like one and just output the data to stdout or
+read the stdin instead of creating/reading an archive. This is however a rather legacy behaviur and
+most modern implementations of `tar` will just throw an error at the user refusing to act without a
+file input.
+
+![Tar refusing to work without file input](./lab_assets/tar-rebellion.png)
+
+#### Q7.23
+
+<q>What compression commands are available in Debian by default (name at
+least three).</q>
+
+- `gzip`
+- `bzip2`
+- `xz`
+
+![Compression tools](./lab_assets/compression-tools.png)
+
+#### Q7.24
+
+<q>How much time does each take? Which is fastest?</q>
+
+The fastest by a long shot was compression tool `zstd` ( A small aside - there is a a slight error in the
+workbook, where command `zs` is used instead of `zstd`. I am not any expert but I could not find
+package `zs` in any repo and I had to google for it a bit. Maybe you have this aliased on your
+system?)
+
+Here is the screenshot documenting this:
+
+![Timed compression tools](./lab_assets/compression-timed.png)
+
+#### Q7.25
+
+<q>5 Using `ls -l` examine the size of the compressed files. Which is best?</q>
+
+The best results (although it always depends on many factors, like the kind of input data, its
+structure...) in this case was achieved by `xz`. It did nearly twice as good as the worst `zstd`.
+
+![Compression output sizes](./lab_assets/compression-sizes.png)
+
+#### Q7.27
+
+<q>How much time does each take? Which is the fastest at uncompressing?</q>
+
+Again, the fastest application of its compressing algorithms came from `zstd`.
+Likely, because the compression mechanism is the least efficient and least complex according to what
+the experiment seems to be indicating.
+
+![Uncompressing timed](./lab_assets/uncompression-timed.png)
+
+#### Q7.28
+
+<q>Explain in your own words what happens when you type this command
+string.(`$ ( cd /usr/share/doc ; tar -c debian ) | gzip -9 >debian.tgz`)</q>
+
+We change to the target directory (Debian docs location) then archive the directory `./debian`
+located there. Following this the output of `tar` is stored and piped into `gzip` that compresses
+the raw data on the fly and outputs the compressed data to the `debian.tgz` file, overwiriting the
+content if exists with `>`.
+
+#### Q7.29 and Q.30
+
+<q>What does the -z flag to tar mean?</q>
+
+<q>What directory has been created?</q>
+
+The `-z` flag in the tar command is used to specify that the archive should be compressed or
+decompressed using `gzip`.  
+This creates a directory in the current location named the same as the tarball it was extracted from (obviousl not
+includingthe `.tar.gz` extension). The directory contains the extracted archive data.
+
+#### Q7.31
+
+<q>Name three packages which provide a C compiler.</q>
+
+- `gcc` - GNU Compiler Collection
+- `make` - helper tool for building software from source with additional control and functionality
+- `clang` - helper tool, front end for compiler with optimizations and support for wider range of C
+  family languages
+- `build-essential` - what is says on the tin, collection of tools essential for building software
+
+#### Q7.32
+
+<q>Where does `make install` put the `hello` executable?</q>
+
+Without `make install` users can place the produced executable in any location in the path to make
+it available as a command:
+
+![Manual placing in path](./lab_assets/hello-from-src-manual.png)
+
+When running `make install` (I sent the stdout to `/dev/null` to quiet it and be able to capture
+entire thing in one screenshot) it placed the resulting executable in `/usr/local/bin`:
+
+![Using make install](./lab_assets/hello-from-src-install.png)
+
+## Q8
+
+#### Q8.1
+
+<q>Which packages relating to SSH are installed?</q>
+
+- libssh-gcrypt-4:amd64
+- libssh2-1:amd64
+- openssh-client
+- openssh-server
+- openssh-sftp-server
+- task-ssh-server
+
+![ssh related packages](./lab_assets/ssh-packages.png)
+
+#### Q8.2
+
+<q>Use `apt-cache` search to find which packages might provide the virtual
+package `ssh-server`</q>
+
+`apt-cache` shows the following packages:
+
+- dropbear-bin
+- lsh-server
+- openssh-server
+- task-ssh-server
+- tinysshd
+
+As a bonus, this can be more explicitly shown by an alternative apt libraries frontend tool called
+[aptitude](https://wiki.debian.org/Aptitude). It verbosely tells the user that `ssh-server` is provided by such and such packages:
+
+![ssh-server providers](./lab_assets/shh-server-provided.png)
+
+#### Q8.3
+
+<q>Your system is now connected to the Internet. Which commands will ensure
+that all packages on your Debian system are up to date? Do this now.</q>
+
+This can be achived by running the classic pair of `apt-get` update and `apt-get upgrade` commands
+(or `apt update` and `apt upgrade`). Those can also be run in simulation mode with `-s` flag.
+Alternatively, packages can be queried for upgradable entries with `apt list --upgradable`.
+
+![checking upgradable](./lab_assets/apt-upgradable.png)
+
+#### Q8.4
+
+<q id="eight-four">Before opening up logins to our machine to the Internet, is there anything
+else we should do? Make sure you make a careful note of any changes you make (it
+might be worth using VirtualBox to take a snapshot too)</q>
+
+I think what you mean is disabling root login so only admin user is managing the system with
+restricted permissions and it is not possible to log in to the system over network as allmighty
+root. It is worth having a backup or a system snapshot though in case we lose access to the system
+or some other thing goes wrong, requiring root access to recover so a rollback is a viable last
+resort action.
+
+![changing conf](./lab_assets/ssh-conf-no-root.png)
+
+After modifying relevant config file, ssh service needs being restarted and then it becomes
+impossible to ssh into the VM from the host system as root, yet student user is still available:
+
+![Root login disabled](./lab_assets/root-login-disabled.png)
+
+#### Q8.5
+
+<q>What kind of key fingerprint is shown (the string at the start of the fingerprint
+line), and what one-way hash is being used to generate the fingerprint (the string
+before the colon in front of the fingerprint itself)?</q>
+
+In my case the key fingerprint is ED25519 and the hashing algorithm used is 256bit Secure Hash Algorithm.
+
+![Logged in ssh first time](./lab_assets/recursive-ssh.png)
+
+Similar result is output when I login from my host machine (having deleted the keys from
+`known_hosts` file):
+
+![login from host](./lab_assets/ssh-login-host.png)
+
+#### Q8.6
+
+<q>What two things are different about the remote login? From which IP/IPv6
+address are you logged in?</q>
+
+Remote connections show as pts (Pseudo Terminals) and have an IP they are connecting from listed in
+the output of `who`.
+
+In this example I am logged in tty, then recursively from localhost in the same tty, finally from my
+host machine. 127.0.0.1 is the standard localhost port an then my main host system shows as the IP
+of the machine on my local home network:
+
+![ssh users on the system](./lab_assets/ssh-who.png)
+
+#### Q8.7
+
+<q>Why are you asked to confirm the fingerprint again?</q>
+
+I am not entirely sure what is meant by "using the "public" IP address your
+VM has (you can find this with the ip addr command." as VM's public IP is the same as host public
+IP, plus `ip addr` will not return public IP. If you mean local network addres, in contrast to
+localhost then it is not public and the question is poorly worded, I would say.
+
+To answer what I suspect is being asked here: ssh is "dumb" (probably for the better) and doesn't
+know we are talkingto the same system. This results in storing of the same key under separate names
+on the user's computer. It is good to be aware of that, as in
+the future if one key is update it might cause problems due to incosistency.
+
+After wiping keys from known_hosts it can be demonstrated that a distrinct entry but same key and
+hash are created for "localhost" shorthand, actual localhost IP "127.0.0.1" and using local IP of my
+machine:
+
+![creating entries in known_hosts](./lab_assets/ssh-three-ways.png)
+
+#### Q8.8
+
+<q>In which file are cached host keys stored?</q>
+
+I've gone a bit ahead of myself and mentioned it already above. The file is:
+
+`~/.ssh/known_hosts`
+
+#### Q8.9
+
+<q>Is there any difference? Are you able to log in as root over SSH?</q>
+
+Yes, the prompt has a different user name and no because, as described earlier, I disallowed this.
+
+![ssh as another user](./lab_assets/ssh-as-demouser.png)
+
+#### Q8.10 Q.11 and Q.12
+
+<q>Which boot manager is responsible for this screen?</q>
+
+<q>How many possible boot options are there here? How many, and what are
+they, for the most recent version of the kernel?</q>
+
+<q>How many lines of text are shown during the boot process?</q>
+
+I am not sure what school VMs are using, but it is either no fancy screen and SystemD-boot
+booting right into the OS, or in 99% of the cases it will be humble Grub (I have heard some people
+are using rEFInd but they might be a legend or are hacking away on Apple machines).
+
+I woudl bet my money on Grub which is also the case in my VM.
+
+My VM is quite fresh so it hasn not got previous kernel versions stored, but my bare metal Fedora is
+configured to keep 2 recent kernel versions rotated on each kernel update. Anyway, this is what my
+VM has:
+
+![grub screen](./lab_assets/grub-kernel.png)
+
+Well... A lot of lines?
+
+![boot screenshot](./lab_assets/boot.png)
+
+I realize that I am running Debian with a desktop environment, so a lot more services are being
+started than on a barebones server. Pausing the VM can help inspecting the messages - those are
+basically mostly confirmations of actions performed by the init system. A detailed logs can be
+obtained however from `dmesg` and `journalctl` commands.
+
+#### Q8.13
+
+<q>How many kernels are available on your system, and what versions are they?</q>
+
+Same as in the Grub menu - just one kernel 6.1.0
+
+![kernels](./lab_assets/kernels-in-boot.png)
+
+On the other hand, my main system is configured to retain 2 kernel versions plus by default keeps
+one recent copy as rescue kernel.
+
+Setting in `dnf` configuration:
+
+![dnf settings](./lab_assets/dnf-conf.png)
+
+![fedora kernels](./lab_assets/fedora-kernels.png)
+
+#### Q8.14
+
+<q>What is the subdirectory of /boot called?</q>
+
+On Debian VM it is `/boot/grub`.
+
+It is worth mentioning that different systems might have different organisation of directories. It
+might be sometimes called `grub2`, also we might find additional directories i.e. my main system has
+`efi/` and `lost+found/` directories located in `/boot`.
+
+#### Q8.15, Q8.16 and Q8.17
+
+<q>By which command was this file generated?</q>
+
+<q>Which version of the Linux kernel does the first menuentry section relate to?</q>
+
+<q>How many other menuentry sections are there under the submenu
+"Advanced options..."</q>
+
+Grub config file warns you to not edit it directly and as a safety measure editable config file is
+provided in `/etc/grub.d` that `grub-mkconfig`. This command sanitazes and validates user
+interventions before reconfiguring anything in the actual config, because messing up your boot
+manager can render your machine inaccessible.  
+I learned this hard way when
+[this](https://endeavouros.com/news/full-transparency-on-the-grub-issue/) debuckle happened last
+year (I was on Arch derivative then) and I had to chroot into the system from a live usb to use precisely this command to fix my grub.
+
+The first menuentry lists the latest and default kernel on the system - 6.1.0.
+
+On a VM I only have one additional copy of recovery kernel listed.
+
+![grub.cfg](./lab_assets/grub-cfg.png)
+
+#### Q8.18
+
+<q>Bearing in mind your answer to Q8.12, what is different this time?</q>
+
+This time lots of verbose and detailed log messages from kernel show up additionally. The same
+format as recorded by `dmesg`:
+
+![dmesg logs](./lab_assets/dmseg-logs.png)
+
+#### Q8.19
+
+<q>Roughly how long does it take the system to boot?</q>
+
+Roughly about 3 seconds? It is very fast on modern hardware in any case, but it is considerably
+slower than in quiet mode.
+
+#### Q8.20
+
+<q>Name at least 3 sources (other than kernel) which appear in the output of
+`journalctl`.</q>
+
+- kernel
+- systemd and its managed services
+- audit
+- cron
+- polkitd
+- avahi-daemon
+- network-manager
+
+#### Q8.21 and Q8.22
+
+<q>What is the command is shown running for PID 1 in `ps`'s output?</q>
+
+<q>Which executable is actually running as PID 1?</q>
+
+It is obviously init system - `systemd` in this case. The command located in `/sbin` is `init`. This
+is the executable.
+
+![init](./lab_assets/init.png)
+
+Also identified by [1] in the logs.
+
+![journalctl](./lab_assets/journalctl-example.png)
+
+#### Q8.23
+
+<q>Name at least 5 types of systemd units.</q>
+
+- services
+- devices
+- mounts
+- paths
+- sockets
+- timers
+- targets
+
+#### Q8.24
+
+<q>What are the three columns for state information headed?</q>
+
+It is **LOAD**, **ACTIVE** and **SUB**.
+
+Fist indicates whether the unit file has been successfully loaded into the systemd system, second
+describes whether the unit is currently active and running and the last shows its low-level state.
+
+#### Q8.25, Q8.26 and Q8.27
+
+<q>Which unit appears in the output to both of these commands, and what is it
+responsible for?</q>
+
+<q>From the output of the second of these commands, on which virtual
+terminals are logins currently being awaited / running?</q>
+
+<q>What (if anything) has changed?</q>
+
+It is `getty.target`:
+
+![getty](./lab_assets/getty-target.png)
+
+Target is a unit whose primary purpose is to group other units. `getty.target` is a target unit in
+systemd that represents the system console getty services. A getty service is responsible for
+managing the login prompt on a terminal.
+
+There is two services running, one per each active TTY.
+
+After adding additional TTY a new getty service is started:
+
+![new getty](./lab_assets/new-getty.png)
+
+#### Q8.28
+
+<q>Which target is the default target?</q>
+
+The default target on this system is `multi-user.target`.
+
+![default target](./lab_assets/default-target.png)
+
+This was determined by me earlier to make the system boot into TTY wihtout DE, despite having one.
+
+A good analogy is to think about systemd organizing systems modules. They are kind of organized into
+those "drawers" called targets and depending on which is configured a different set of services and
+other units would spawn on system initialisation.
+
+#### Q8.29
+
+<q>How many dependencies does the default target have, in comparison to the
+`rescue.target` unit</q>
+
+Unfortunately, it appears that my VM system has no rescue target configured:
+
+![targets](./lab_assets/targets.png)
+
+However, I can make an educated guess. Rescue target is a single user mode with "fluff" trimmed to
+minimum, designed to perform recovery and maintainance. Therefore I assume such system mode requires
+significantly less dependencies.
+
+#### Q8.30, Q.31, Q.32 and Q.33
+
+<q>What is the unit name and type of the SSH server?</q>
+
+<q>Name three other pieces of information (other than the overall status) which
+the status subcommand can provide?</q>
+
+<q>Which systemctl subcommands are used to stop and start units?</q>
+
+<q>If you stop a unit, does it show as "enabled" or "disabled"? What about
+"active" or "inactive"? What about "dead" or "running"?</q>
+
+![ssh status](./lab_assets/ssh-status.png)
+
+The unit is a service and is named `ssh.service`.
+
+- If it's loaded
+- Its operational status
+- Hints to where find relevant manpages
+- Actual executable that spawned the service and its exit status
+- PID identifying the deamon that runs the service after it has been spawned
+- Threads the process is using
+- Memory the process is using
+- CPU usage
+  -Service's control group
+
+The commands used to start/stop a unit are:
+
+- `systemctl start $service_name`
+- `systemctl stop $service_name`
+
+![starting and stopping unit](./lab_assets/service-start-stop.png)
+
+Stopped units are still enabled (loaded and available for start). However, their activity status
+would say they are `inactive (dead)`.
+
+Most commonly active would be synonymous with (running) and inactive with (dead). There are other
+substatuses available i.e. inactive (waiting).
+
+#### Q8.34
+
+<q>How does its status differ from when it was stopped?</q>
+
+`systemctl disable` - This command is used to disable a service or unit, preventing it from starting
+automatically at boot time. It does not stop currently running unit or prevent from starting it if
+it's been loaded. It achiveves its goals by removing relevant symlinks:
+
+![ssh disabling](./lab_assets/ssh-disabling.png)
+
+#### Q8.35
+
+<q>Is the SSH server now running? How could you start it? What do you think
+would happen if you moved between these targets again? Check your answer.</q>
+
+After running `systemctl isolate graphical` I am in this lovely XFCE desktop environment and ssh is
+completely dead and disabled. It will not start when main target is loaded or switched between:
+
+![alt-text](./lab_assets/graphical-ssh-disabled.png)
+
+This
+does not mean however, that it cannot be started. It simply will not be started automatically.
+Manually though... :
+
+![alt-text](./lab_assets/graphical-ssh-disabled-active.png)
+
+And after starting it I am able to ssh into the VM from my host system.
+
+If I am moving back and forth between the `multi-user` and `graphical` targets, the system will start and stop services based on the target's configuration.
+
+#### Q8.36
+
+<q>Find which flag to journalctl can limit output to what has happened since
+a particular date/time, and use this to show just this lab session's activity.
+Document the command used here</q>
+
+`--since` flag that takes a string representing the time can be used for that. Here's a log of what
+specifically happened to ssh service in the last half an hour of experiments:
+
+![ssh journal](./lab_assets/ssh-journal.png)
+
+#### Q8.37, Q8.38 and Q8.39
+
+<q>Which files are deleted by this process?</q>
+
+<q>What has happened? What kind of file has just been created?</q>
+
+<q>Where in the filesystem are the unit files (as opposed to the links to them)
+stored?</q>
+
+As mentioned before the relevant symlinks are deleted when unit is disabled and created on enabling:
+
+![ssh disabling](./lab_assets/ssh-disabling.png)
+
+They are located in `/etc/systemd/system` and lead to various systemd libraries located in
+`/lib/systemd/system` symlinking to them in the config directory basically enables them as this
+config directory is being checked for what to start.
+
+![systemd symlinks](./lab_assets/systemd-symlinks.png)
+
+#### Q8.40, Q8.41 and Q8.42
+
+<q>What is the name of the configuration file for sshd?</q>
+
+<q>What is the default value of the PermitRootLogin setting?</q>
+
+<q>In a separate virtual terminal, use man sshd_config to find out what values
+this setting could take. What value do you need?</q>
+
+It is `/etc/ssh/sshd_config`.
+
+The default on my system was `prohibit-password`.
+
+It could for instance be simple `yes` or `no`.
+
+This has been answered in [question 8.4](#eight-four). We do not want root to gain remote access by
+potential bad actors, so "no" is the answer.
