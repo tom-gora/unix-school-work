@@ -2618,3 +2618,242 @@ It could for instance be simple `yes` or `no`.
 
 This has been answered in [question 8.4](#eight-four). We do not want root to gain remote access by
 potential bad actors, so "no" is the answer.
+
+## Q9
+
+#### Q9.1, Q9.2, Q9.3 and Q9.4
+
+<q> How many interfaces are there, and what are their names?</q>
+
+<q>Which of these interfaces correspond to lines in the output of lspci?</q>
+
+<q>Which kind of addresses are shown for these interfaces in the output of ip
+link?</q>
+
+<q>How can you tell that only one of the Ethernet interfaces is currently active?</q>
+
+There are two interfaces.
+
+- lo (Loopback)
+- enp1s0 (Ethernet)
+
+The Ethernet interface "enp2s0" corresponds to the line in lspci:  
+`01:00.0 Ethernet controller: Red Hat, Inc. Virtio 1.0 network device (rev 01)`
+
+The addresses shown by `ip link` are MAC addresses. Loopback interface is not associated with a real
+hardware identivied by MAC though, so it has a placeholder MAC of `00:00:00:00:00:00`.
+
+We can tell `enp1s0` is active because it says so here: `state UP` in the corresponding output line.
+
+![ip link output](./lab_assets/ip-link-interfaces.png)
+
+#### Q9.5
+
+<q>What IPv4 addresses do the two active interfaces have? What kind of address
+is being used on the lo device?</q>
+
+Loopback device provides localhost address and this IP is universal. It is `127.0.0.1`. I am from
+web development so this is in usage daily for me, any development environment runs locally on
+localhost.
+
+Ethernet shows local IP issued by my router's DHCP service to my machine.
+
+![ip addr output](./lab_assets/ip-addr.png)
+
+#### Q9.6
+
+<q>Which keystroke should be used to terminate the ping process? How could
+you have limited the ping command to only sending 5 ICMP packets?</q>
+
+As any process running in the TTY `ping` can be stopped by pressing `Ctrl+C`.
+
+To specify the number of packets we can use `-c` flag (as in count) followed by desired number of
+packets.
+
+![pinging limit](./lab_assets/pinging-limit.png)
+
+#### Q9.7
+
+<q>Which ip subcommand will print the routing table on a Linux machine?</q>
+
+(In the background, following the instructions, I added a new device to my VM and configured the IP to a local IP outside of the
+range my router is reserving for DHCP service and generally not taken by anything else)
+
+![alt-text](./lab_assets/new-network-adapter.png)
+![new interface](./lab_assets/new-interface.png)
+
+The command to display routing table is `ip route`.
+
+![ip route](./lab_assets/ip-route-command.png)
+
+#### Q9.8 and Q9.9
+
+<q>How many interfaces does it have?</q>
+
+<q>What IP address does the Ethernet NIC have, and (if it has one) where has this
+come from?</q>
+
+**NOTE:** Well, cloning the VM and firing them up at the same time created a bit of a mess. My original
+ethernet devices were showing no IP at all, and the manually set up got new IPs from the router
+ending in numbers different that 50. Looks like my router enforces devices on my network to take
+IPs from its DHCP range and protects me from conflicts. Very well, smart beast. So I went ahead and
+manually fixed the non conflicting interfaces, setting them to use fixed IPs from outside
+the DHCP range (21 and 22). Router accepted this, so I thought ok I will leave the one that was
+given IP ending with 100 from the DHCP range, because I do not want to mess up my home network. I just used `ip addr` to check if there are definitely no further conflics, used `ip
+route` to check if the routes are there and manually confirmed everything by attempting to ssh into
+both VMs from my host system using the issued IP addresses and everythign worked as expected.
+
+![resolved clone conflicts](./lab_assets/clone-wars.png)
+
+Regarding the questons, as can be seen above after I got rid of additional iterface in the cloned
+machine, my original VM has 3 interfaces, as set up in previous taks. My cloned machine has 2
+interfaces. On both VMs one of those is a loopback device.
+
+Regarding the second question, let us look just at the cloned machine just because it has only one
+ethernet device which I guess makes it simpler. The interface has IP `192.168.124.22` as seen below
+both in GUI and in TTY:
+
+![clone ip gui](./lab_assets/clone-ip-gui.png)
+![clone ip tty](./lab_assets/clone-ip-tty.png)
+
+As explained before, this one came from me setting it up statically. But if there were conflicts
+DHCP would take over and issue one, being the source of the address.
+
+#### Q9.10 and Q.11
+
+<q>Document the commands you used to do this.</q>
+
+<q>What does the /24 after the address indicate?</q>
+
+I tore my hair out before I found out where is the trap.
+[THIS](https://serverfault.com/questions/549129/ifdown-interface-not-configured-debian-6) helped me!
+It turns out if an interface has been brought up with command different to `ifup` it will cause
+conflicts. Also, first of all I had to manually add it to `/etc/netwok/interfaces` so `ifup` and
+`ifdown` could recognize this interface in the first place.
+
+So this is how I configured the `enp1s0` interface:
+
+![alt-text](./lab_assets/ifdown-reconfigured.png)
+
+And then, from the state of DOWN I gave it an address again with `ip addr add 192.168.124.22/24 dev
+enp1s0` and set it to UP with `ip link set enp1s0 up` and confirmed the state inspecting the output
+of `ip addr` again:
+
+![manually brought up interface](./lab_assets/ip-brought-up.png)
+
+using `ip` tooling as instructed rather than `ifup`.
+
+Reegarding the `/24` question, this is a special notation for the subnet mask that translates to
+`255.255.255.0`. This standard mask ensures that the first three octets are reserved for the network, and the last octet is available for host addresses.
+
+#### Q9.12 and Q9.13
+
+<q>Why does this not work - what is missing on second?</q>
+
+<q>What command can be used to fix this problem?</q>
+
+I am not sure what was supposed to be missing in the guided learning experience. I assume the
+correct routing setup. On my machines everything works fine and `ip route` returns `192.168.124.0/24
+dev enp1s0 proto kernel scope link src 192.168.124.22` which configures things so that the network
+`192.168.124.0/24` is reachable via the `enp1s0` interface with a source IP of `192.168.124.22`
+(cloned machine).
+
+But this works thanks to the mask. Any address on network `192.168.124.` with any last host octet
+will be covered by this condition.
+
+![network reachable](./lab_assets/full-network-reachable.png)
+
+I presume the whole point is to show what happens when there is no defined routing. So using `ip
+route del` and `ip route add` I tweaked the second machine routing table so it literally can only
+talk to the first VM but only on interface `enp1s0`.
+
+![routing broken](./lab_assets/routing-broken.png)
+
+From there I can either add a specific route for `enp7s0` on the first machine, or add default route
+which would allow general communication on the network. I do it with `ip route add default via
+192.168.124.22 dev enp1s0`
+
+![routing fixed](./lab_assets/routing-fixed.png)
+
+And I can again ping from any virtual machine as well as my host PC.
+
+#### Q9.14
+
+<q>Which of the two systems is your Debian VM using?</q>
+
+My system is using `network-manager` package, likely because it is a Debian flavour bundled with a
+GUI desktop environment. And yes, now I see why I had the problem where `ifdown` was not detecting
+interface that was detected by `ip`.
+
+#### Q9.15
+
+<q>What do you notice about the interfaces which are configured, and the
+contents of /etc/network/interfaces?</q>
+
+I notice I tampered with it to define a static IP, I notice it sources all files that can be placed
+in `/etc/network/interfaces.d` likely to allow for having a modular config instead of one giant file
+and I notice that it uses full notation for subnet mask. I suspect since it is a declarative way of
+configuring network settings, we can write here whatever we need, then just have the system use
+those settings on startup, either with systemd or maybe something like put `ifup` and `ifdown`
+statements in users' .bashrc files to enable interfaces and communication as needed on per-user
+basis. Down the line I will see if I solved the chapter ;)
+
+#### Q9.16, Q9.17, Q9.18, Q9.19 and Q9.20
+
+<q>Has the configuration been applied?</q>
+
+<q>Has the configuration been applied now?</q>
+
+<q>Is the configuration still being applied?</q>
+
+<q>Is there anything different about the process on the other interface? Why is
+this?</q>
+
+Initial state of the interfaces:
+
+![initial state of interfaces](./lab_assets/eth-saga-initial.png)
+
+And the config as applied:
+
+![config applied](./lab_assets/eth-saga-config.png)
+
+After simply changing the configuration file it does not get applied automatically.
+
+**NOTE:** I was able to google my way to [THIS](https://lists.debian.org/debian-user/2017/09/msg00911.html) in the Debian
+mailing list. This simplified understanding of what I actually did there in the config.
+
+After calling `ifup` on the interface it gets up:
+
+![ifup applied](./lab_assets/eth-saga-ifup.png)
+
+And the situation remains the same after reboot thanks to declaring the `allow-hotplug` rule in the
+config file. Similar effect is achieved with `auto` (can be seen on loopback interface
+configuration) with differences explained in the link above. I have seen opinions that `auto` is
+safer while researching, but by no means, I am no networking expert so I will replicate, get
+results, understand and explain. No opinions on this one.
+
+Regarding the other interface `enp1s0` it has neither of these values assigned in config, so it
+isn't getting configured on boot.
+
+Finally, regarding documenting content of `/etc/network/interfaces` I have already provided
+screenshot earlier, while documenting my work chronologically. The added things are settings added
+is static IP for the first added interface to handle DHCP confusing me with random IPs. Then another
+adapter added to the machine in my VM management software (`virt-manager`) gets renamed to the
+name is expected to be seen in the task (cannot manage what name is being given when adding a new
+device), finally having a `enp0s8` interface to play with, I set the required lines. `allow-hotplug`
+makes it so it starts up on boot, `iface` line and the following nested property sets the static
+IP that is outside of the DHCP range.
+
+#### Q9.21
+
+<q>What is different in the interfaces file between a static IP address
+configuration and one using DHCP? (Give two differences)</q>
+
+With each question this really brings in darkest memories from working as support agent for Sonos wireless speakers and
+serving technologically challenged audiophile customers. "Sir, DHCP is a thing that runs on your
+Virgin router and gives every device on your home WiFi a unique number and keeps all this tangled
+mess of data in order, so nothing gets duplicated, or lost, or explodes...". Interface that is
+configured to use DHCP will recive a unique local IP from the service running on (in most cases) the
+router. Statically declared IP address is exactly what this name describes. It is declared to be
+this and that and does not change. The responsibility of setting an address that does not conflict
+with anything and does not cause issues lies in the hands of the user.
