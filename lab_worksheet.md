@@ -2857,3 +2857,129 @@ configured to use DHCP will recive a unique local IP from the service running on
 router. Statically declared IP address is exactly what this name describes. It is declared to be
 this and that and does not change. The responsibility of setting an address that does not conflict
 with anything and does not cause issues lies in the hands of the user.
+
+#### Q9.22
+
+<q>What services does the `dnsmasq` package provide?</q>
+
+The `dnsmasq` package provides a lightweight DNS forwarder and DHCP server.
+
+#### Q9.23
+
+<q>Which invocations of `systemctl` will do this?</q>
+
+That would be `restart` and `status` subcommands. The setup below:
+
+![dnsmasq](./lab_assets/dnsmasq-setup.png)
+
+#### Q9.24
+
+<q>How will it configure IP on the `enp0s3` interface?</q>
+
+Since my original configured interface was `enp1s0` on my VM, then I will use this one in the coming
+trials and tribulations.
+
+Right now it has a static IP assigned by me. If I got rid of the address declarations and changed
+`static` to `DHCP` then the IP would be given by DHCP service.
+
+![alt-text](./lab_assets/eth-saga-begins-again.png)
+
+#### Q9.25
+
+<q>What IP address and subnet mask does it have, and where have these come
+from?</q>
+
+It has a static IP assigned by me. If I got rid of the address declarations and changed
+`static` to `DHCP` then the IP would be given by DHCP service.
+Netmask is declared in a form depending on notation and place of declaration `/24` or full `255.255.255.0` (but
+could be `/16` or `255.255.0.0` depending on how is the network being configured). Subnet masks can
+be managed by `network-manager` as well, and finally DHCP service can assign them.
+
+![alt-text](./lab_assets/eth-saga-chapter-two-continues.png)
+
+#### Q9.26
+
+<q>Does second now have a default route, and if so, what is it?</q>
+
+Yes is does. It is `default via 192.168.124.1 dev enp1s0 onlink`
+
+![alt-text](./lab_assets/fucking-eth-saga-default-route.png)
+
+#### Q9.27
+
+<q>Which DNS server is second using?</q>
+
+It points to the gateway and my router uses Cloudflare public DNS and Google's 8.8.8.8 for
+secondary. But one of those days I will have time to spare and I will set myself a Pi-hole up ;)
+
+![alt-text](./lab_assets/resolv.png)
+
+#### Q9.28
+
+<q>Why can second not access remote destinations?</q>
+
+So it is supposed to not do that?! Why then several questions ago we were instructed to install
+`dnsmaq` and I got sent down the 3 hour rabithole full of mandness trying to figure out what I broke
+down, so `apt` cannot do anything because I cannot even as much as ping the outside world?
+
+It could not do it because there was initially no proper route to get the traffic through actual router.
+
+#### Q9.29 and Q9.30
+
+<q>What does the man page for sysctl claim it is for?</q>
+
+<q>What is the current setting of the net.ipv4.ip_forward setting? What
+does this mean?</q>
+
+The `sysctl` command is used to modify kernel parameters at runtime. The parameters available are
+those listed under `/proc/sys/`.`sysctl` can be used to both read and write.
+
+The `net.ipv4.ip_forward` setting controls whether IP forwarding is turned on or off for IPv4
+addresses. Currently it is off:
+
+![alt-text](./lab_assets/eth-saga-forwarding.png)
+
+#### Q9.31
+
+<q>What invocation of `sysctl` allows you to make this change?</q>
+
+`sysctl -w net.ipv4.ip_forward=1` is the command.
+
+![alt-text](./lab_assets/forwarding-changed.png)
+
+#### Q9.32 and Q9.33
+
+<q>What commands are required to enable, start and check the status of the
+`nftables` service?</q>
+
+<q>What is the output of the nft list ruleset after the `nftables` unit is
+started?</q>
+
+As with any other service, `systemctl` can help.
+
+- `systemctl enable nftables` - enables service to start with the system
+- `systemctl start nftables` - starts the service
+- `systemctl status nftables` - checks the status of the service
+
+The `nft` output printed in the screenshot below is a representation of a nftables rule set. It is a
+simple nftables table named "filter" with three chains: "input," "forward," and "output." Each chain
+corresponds to a different stage in the packet processing pipeline.
+The `policy accept` statements indicate that by default, if a packet does not match any rule in a
+chain, it will be accepted.
+
+![alt-text](./lab_assets/nft-service.png)
+
+#### Q9.34
+
+<q>Did the configuration also get added to the persistent configuration for
+debian? What will happen when debian reboots?</q>
+
+Yes, the configuration was also added to the persistent configuration for Debian. This means that
+the NAT rules will be applied when Debian reboots.
+
+#### Q9.35
+
+<q>What would happen if you used a single `>`?</q>
+
+As we all remeber from the lecture on redirecting, using a single `>` would overwrite existing rules
+as this writes over existing file content. `>>` is for appending to the end.
