@@ -2983,3 +2983,66 @@ the NAT rules will be applied when Debian reboots.
 
 As we all remeber from the lecture on redirecting, using a single `>` would overwrite existing rules
 as this writes over existing file content. `>>` is for appending to the end.
+
+#### Q9.36 and Q9.37
+
+<q>Find out the IP address of one of the other debian machines in the lab (or
+one of the PCs on the network) and check you can ping it from second (you can do
+this from another virtual terminal while it is downloading software). Use the version
+of the command which will only sent 5 pings, and past a screenshot of the result
+here.</q>
+
+<q>Use `traceroute -n` to perform a traceroute to this same destination. How
+many hops are required?</q>
+
+![alt-text](./lab_assets/routing-via-debian.png)
+
+The setup above:
+
+- On the left side: Freshsly created VM, no setup IP issued by the route from DHCP:
+  `192.168.124.102`
+- Right top corner: The routing debian machine, static ip `192.168.124.22`and forwarding set to on.
+- Right bottom corner:
+  The cloned VM that only has one route available `default` via `debian12` and the gateway is
+  declared in `interfaces` file. Traced route from this machine goes via `debian12` and then reaches
+  the fresh machine.
+
+It does 2 hops.
+
+#### Q9.38
+
+<q>Find out which DNS server the host machine of the two VMs uses. Use the
+host command to lookup a DNS address (for example www.example.org) using
+that server rather than the default. Post a screenshot here.</q>
+
+Primary and secondary DNS servers on my home network point to public Google and Cloudlare DNS
+services:
+
+![alt-text](./lab_assets/dns-home.png)
+
+Using the Cloudflare one I can resolve the domain name to actual server IP addresses like so:
+
+![alt-text](./lab_assets/dns-cloudflare.png)
+
+#### Q9.39
+
+<q> Which service has configured this, and supports the user management of
+the connection</q>
+
+Getting back to GUI on `debian12-clone`:
+
+![alt-text](./lab_assets/back-to-gui.png)
+
+**NOTE:** I already have XFCE installed on my machines.
+
+The declared interfaces have been removed:
+
+![alt-text](./lab_assets/interfaces-removed.png)
+
+Indeed after rebooting a new interface has been configured:
+
+![alt-text](./lab_assets/nm-interface.png)
+
+The service responsible for this is `NetworkManager.service`.
+
+![alt-text](lab_assets/nm-interface.png)
