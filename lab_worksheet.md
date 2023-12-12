@@ -3356,4 +3356,33 @@ Here is the page loaded by IP from my main system browser:
 `mod-available` and `mod-enabled`. Similar to `sites...` directories config files are written in
 `..-available` and after enabling them simnple symlinks are placed `..-enabled`. The difference is
 `sites` contain configs for sites and endpoints the server exposes, `mods` are for configuring
-additional apache modules that extend the functionality.
+additional apache modules that extend the functionality like aliases or authentication.
+
+#### Q10.29
+
+<q>What change does the `a2enmod` command make?</q>
+
+It can enable a module or a site that it detects in `mods-available` or `sites-available`
+respectively. There needs to to be configs for them in place for the command to work and correctly
+create symbolic links.
+
+#### Q10.30
+
+<q>Which version of PHP is installed?</q>
+
+It is `8.2.7`. Plus the script can be seen working blow:
+
+![alt-text](lab_assets/php-time.png)
+
+**NOTE:** A small error need to be pointed out. We need to access `time.php` not `time.html`.
+
+#### Q10.31
+
+<q>Why would putting `time.php` in student's `public_html` directory not
+have worked?</q>
+
+![alt-text](lab_assets/php-disabled.png)
+
+**To sum up:**
+
+![alt-text](lab_assets/thanks.png)
