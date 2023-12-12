@@ -188,7 +188,7 @@ In the case of my system there are 21:
 `boot        dev  home  lib64       media  opt   root  sbin  sys  usr
 bin  btrfs_pool  etc  lib   lost+found  mnt    proc  run   srv   tmp  var`
 
-or, to be more precise 17, as Fedora chose to just substitute 4 with symplinks to unify theym with
+or, to be more precise 17, as Fedora chose to just substitute 4 with symlinks to unify theym with
 they equivalents in `/usr/`. These are: `bin sbin lib lib64`.
 
 ---
@@ -3046,3 +3046,314 @@ Indeed after rebooting a new interface has been configured:
 The service responsible for this is `NetworkManager.service`.
 
 ![alt-text](lab_assets/nm-interface.png)
+
+## Q10
+
+#### Q9.1, Q9.2, Q9.3 and Q9.4
+
+<q>What is the IP address of the `debian` VM?</q>
+
+<q>For what reason is the fingerprint confirmation required?</q>
+
+<q>How can you check the fingerprint from the CLI on `debian`?</q>
+
+<q>What two pieces of information tell you you are logged in remotely to
+`debian`?</q>
+
+Currently `debian12` (my first VM) is still assigned `192.168.124.22`.
+
+![alt-text](lab_assets/chapter-ten-beginning.png)
+
+`ssh` into `debian12` again; the key is required again because host is identified differently now
+that the settings have been wiped and reconfigured by Network Manager plus the machine has been
+given a new IP by DHCP server. Thus the connection needs to be added to trusted hosts again:
+
+![alt-text](lab_assets/chapter-ten-ssh-again.png)
+
+The key can be checked on the remote machine like so:
+
+`ssh-keygen -l -f /etc/ssh/ssh_host_ed25519_key.pub -E sha256`
+
+![alt-text](lab_assets/fingerprint-confirmed.png)
+
+and the output can be confirmed agains the key showed in the `ssh` prompt before.
+
+I can tell I am on a different system, because the host name is different and the user is
+different in the prompt. Apart from these obvious clues, active check can be performed in multiple
+ways. For instance, the machine's IP can be confirmed, also `tty` can be run to confirm that we are running in a
+slave pseudoterminal (`pts` device type).
+
+#### Q10.5
+
+<q>What happens first? After you have entered what is aksed for, what is the
+result?</q>
+
+Executing `scp 192.168.124.22:~/test/archive.tar .` while `ssh`'d into `debian12`, which IS
+`192.168.124.22` will result in copying the file on the system I am logged into. So effectively it
+copies from `~/test/` to `~` in the example below:
+
+![alt-text](lab_assets/scp-wrong.png)
+
+At least this is the understanding I have of what is being asked for truly, other than to follow
+guided procedure.
+
+I learned while doing this I cannot freely execute commands without specifying user `student-gora`
+on `192.168.124.22` original machine if I am logged in on a second machine as `cloned-student` The
+usernames do not match. The system will be expecting the same name as the curretly logged in user,
+but `cloned-student` does not exist on the original machine.
+
+![alt-text](lab_assets/scp-user-mismatch.png)
+
+But if usernames match, it turns out providing username can be ommited and instead of running:
+`scp file-from-clone.txt student-gora@192.168.124.22:~` I can just run similarly to expected in the
+task: `scp file-from-clone.txt 192.168.124.22:~` and everything will work:
+
+![alt-text](lab_assets/scp-user-match.png)
+
+#### Q10.6
+
+<q>What syntax is required for copying in the other direction?</q>
+
+`scp <username-on-the-remote-machine-if-different>@<remote-machine-ip>:<path-on-the-remote-machine>
+<local-destination-path>`
+
+![alt-text](lab_assets/scp-the-other-way.png)
+
+#### Q10.7
+
+<q>What is the output of this command?</q>
+
+The hostname of remotely accessed system:
+
+![alt-text](lab_assets/remote-hostname.png)
+
+#### Q10.8 and Q10.9
+
+<q>Explain what happens when the above command is issued. What is the
+result?</q>
+
+<q>What advantage does the gzip command bring to this pipelined command?</q>
+
+Command: `( cd /usr/share/doc; tar c xterm ) | gzip -9 - | ssh 192.168.124.22 tar xz`
+
+- `(cd /usr/share/doc; tar c xterm)` - This command changes the current directory to
+  `/usr/share/doc` and then creates a tarball of the `xterm` directory. The output of this command is the tar archive, which is sent to the standard output.
+
+- `gzip -9 -` - This command takes the tar archive from the standard input and compresses it using the `gzip`. The `-` tells `gzip` to read from the standard input and write to the standard output. The output of this command is the compressed tarball, which is sent to the standard output.
+
+- `ssh 192.168.124.22 tar xz` - This command establishes an ssh connection to the system at IP address `192.168.124.22` and runs the tar `xz` command on that system. The tar xz command extracts a gzipped tar archive. The archive to be extracted is read from the standard input, which is the output of the previous command.
+
+In essence, `xterm` directory is compressed and piped via stdout/stdin to another system where it is
+then extracted:
+
+![alt-text](lab_assets/ssh-chain.png)
+
+The advantage of compressing data with `gzip` before it is being piped through ssh connection is
+that the size of the data sent over the network is smaller than uncompressed files.
+
+#### Q10.10 and Q10.11
+
+<q>Where are the private and public keys created, and what are their
+filenames?</q>
+
+<q>How do the file permissions on these two files differ, and why?</q>
+
+Ad the output of the command clearly explains, the files are being created at:
+
+- `/home/student-gora/.ssh/id_rsa`
+- `/home/student-gora/.ssh/id_rsa.pub`
+
+![alt-text](lab_assets/ssh-keygen-called.png)
+
+The private key should be readable and writable only by the owner, on the other hand, the public key
+can be openly shared and therefore its permissions are less restrictive. Both group and others can
+read this key.
+
+![alt-text](lab_assets/key-permissions.png)
+
+#### Q10.12
+
+<q>Why are the double quotes needed in this command?</q>
+
+The command need to preserve formatting, being passed as a single string for the remote shell to
+execute. Since there are multiple words delimited by space in the command, it needs to be quoted to
+be treated as a complete command string.
+
+![alt-text](lab_assets/key-copy.png)
+
+#### Q10.13
+
+<q>Why did we use the `>>` redirection operator rather than `>` above?</q>
+
+Again, to append rather than overwrite any existing keys/configs.
+
+#### Q10.14
+
+<q> What other file is found in `.ssh/` on debian? What is it for, and what is in it?
+(Think back to the questions at the start of this section if you are unsure).</q>
+
+It is `known_hosts`, it is used by ssh clients to verify the identity of a remote system before
+establishing a connection. This file stores the public keys of all the servers ssh connection have
+been established with. It is important for security. It helps to ensure that connection is being
+made to the legitimate server by saving its identity to the local system.
+
+![alt-text](lab_assets/known_hosts.png)
+
+#### Q10.15 and Q10.16
+
+<q>Which versions of NFS does the /etc/export file support?</q>
+
+<q>Which filesystems are currently being exported?</q>
+
+According to the comments in the file seen below, since I am given config examples for v2, v3 and v4
+I assume that these are the versions supported:
+
+![alt-text](lab_assets/nfs-check.png)
+
+currently everything is commented out, so as expected `exportfs` returns empty output.
+
+#### q10.17 and q10.18
+
+<q>what does the `-r` option to `exportfs` do?</q>
+
+<q>what does the `-v` option to `exportfs` do?</q>
+
+Setting things up for `cloned-debian12` IP address.
+
+![alt-text](lab_assets/changing-exports.png)
+
+- The `-r` option to `exportfs` re-exports all directories, synchronizing `/etc/exports` with the
+  current state of the nfs server.
+
+- The `-v` option to `exportfs` provides verbose output. Here, it means the options for the exported
+  filesystem will be displayed in parenthesis.
+
+![alt-text](lab_assets/exported-share.png)
+
+The outcome (slightly messed up, as I exported the cloned machine and accessed it from the original
+VM, but it works as expected, though the other way round) all the directories from `debian12-clone` are mounted:
+
+![alt-text](lab_assets/shared-done.png)
+
+#### Q10.19
+
+<q>Can root list the files in the /mnt/student directory? Why / why not? (Hint:
+check the output of `exportfs -v` you used previously)</q>
+
+No. `root` cannot access contents of the exported directory. This is due to `root_squash` option set
+up on the export, preventing remote `root` from having elevated privilages when accessing a system
+that is not belonging to them. Behind the scenes, on remote system, `root` is actually seen as a
+temp user with no privileges. That is a default security feature.
+
+![alt-text](lab_assets/root-squash.png)
+
+#### Q10.20
+
+<q>Can student read and write files contained in the `/mnt/student` directory
+(check both)? Why / why not?</q>
+
+The `no_all_squash` flag makes it so the connecting non-root user UID and GID is shared with the
+remote machine. Hence, `student-gora` can read data that remote `student-gora` has permissions to
+access, due to the user details matching. As can be seen below, this user cannot however read data
+in directories other than he owns:
+
+![alt-text](lab_assets/no-all-squash.png)
+
+#### Q10.21
+
+<q>What effect does adding the `rw` export option have?</q>
+
+![alt-text](lab_assets/nfs-rw.png)
+
+The `rw` (read/write) option in the nfs export configuration allows the specified clients to have
+read and write access to the shared file system.
+
+Now, `student-gora` can remotely write to `student-gora`'s directory on exported filesystem:
+
+![alt-text](lab_assets/rw-in-action.png)
+
+**NOTE:** This still does not give permissions to locations this user does not have ownership of.
+
+This is a working setup I spend some time setting up to work:
+
+- Two VMs:
+  - debian12 / hostname `debian-uni` / static ip: `192.168.124.21`
+  - debian12-clone / hostname `debian-clone` / static ip: `192.168.124.46`
+- debian12 is running `dnsmasq` service. It has gateway hardcoded to my physical machine (which in
+  turn forwards traffic to home router) and
+  its `/etc/dnsmasq.conf` has `addn-hosts=/etc/hosts` line uncommented to make sure the DNS service is reading
+  the hosts file (for whatever reason it was giving me issues without this).
+  Forwarding is of course set to 1 and I am able to succesffully ping this machine from anywhere on
+  the subnet as well as ping internet addresses.
+  I also added as instructed my local domain to `/etc/hosts` - `www.mypc.home`
+
+![alt-text](lab_assets/working-one.png)
+![alt-text](lab_assets/working-two.png)
+
+#### Q10.22
+
+<q>Which version of Apache is contained in the apache2 package?</q>
+
+Currently Debian 12 ships version 2.4.57
+
+![alt-text](lab_assets/apache-version.png)
+
+#### Q10.23
+
+<q>Which TCP port number does Apache listen on?</q>
+
+Apache by default listens on the default TCP port used for regular non encrypted HTTP requests.
+For https it will use port 443 by default.
+
+#### Q10.24
+
+<q>What is the title at the top of the page you see?</q>
+
+After overcoming a bit of a hurdle (my VM has access to the internet and typying in `www.mypc.home`
+by default enforced Google search for this domain. After disabling URL search I am able to access
+`Apache2 Debian Default Page`:
+
+![alt-text](lab_assets/apache-welcome.png)
+
+#### Q10.25
+
+<q>Which directory is the root of the web site served up by Apache by default?</q>
+
+As far as I remeber (my vps is also deployed on classic LAMP stack) it is `/var/www/html`
+
+#### Q10.26
+
+<q>Give the full path to the file on debian when you point your browser at the
+above address.</q>
+
+The full path point to a simple index file. It can be inspected even in a browser by directly
+opening the html file from drive, rather than over the network.
+
+![alt-text](lab_assets/apache-path.png)
+
+#### Q10.27
+
+<q>Which URL is this web page available at from "outside" your network?</q>
+
+This index file served by apache can be accessed from outside the subnet but still from within my
+home network. This is because my home router does not have routing outside HTTP requests hitting my
+public IP to
+`192.168.124.21` on the local network set up. It could be configured but then I'd rather not expose anything
+inside my home network to unencrypted HTTP traffic ;)
+
+To access it from devices on my home network currently I can only type in the full IP of the VM in
+the url bar. This is because host with a domain such as `www.mypc.home` is not known to my router's
+DNS and it will not get resolved.
+
+Here is the page loaded by IP from my main system browser:
+
+![alt-text](lab_assets/apache-outside.png)
+
+#### Q10.28
+
+<q>There are two directories here beginning with mod - what are their names?</q>
+
+`mod-available` and `mod-enabled`. Similar to `sites...` directories config files are written in
+`..-available` and after enabling them simnple symlinks are placed `..-enabled`. The difference is
+`sites` contain configs for sites and endpoints the server exposes, `mods` are for configuring
+additional apache modules that extend the functionality.
